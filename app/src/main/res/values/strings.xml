@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Practica1</string>
+    <string name="titulo">Alumno de TTA</string>
+    <string name="Usuario">Usuario</string>
+    <string name="Contraseña">Contraseña</string>
+    <string name="ejercicio">Explica como aplicarias MVC en el desarrollo de un APP</string>
+    <string name="Bienvenida">Bienvenido John Doe</string>
 </resources>
