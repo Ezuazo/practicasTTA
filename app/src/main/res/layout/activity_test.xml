@@ -8,8 +8,24 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/pregunta"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/Pregunta"/>
 
+    <RadioGroup
+        android:id="@+id/test_choices"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/button_send_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="@string/button_send"
+        android:onClick="send"/>
 
 </LinearLayout>
