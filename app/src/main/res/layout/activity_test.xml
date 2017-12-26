@@ -27,5 +27,12 @@
         android:visibility="invisible"
         android:text="@string/button_send"
         android:onClick="send"/>
+    <Button
+        android:id="@+id/button_view_advise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="Ver consejo"
+        android:onClick="viewAdvise"/>
 
 </LinearLayout>
