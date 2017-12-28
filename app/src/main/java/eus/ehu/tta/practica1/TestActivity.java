@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -59,7 +60,12 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void viewAdvise(View view){
-        Toast.makeText(getApplicationContext(),"Adviso",Toast.LENGTH_SHORT).show();
+        ViewGroup layout = (ViewGroup)view.getParent();
+        WebView web = new WebView(this);
+        web.loadData("<p> Aqui insertamos el consejo <b>en modo HTML</b></br>Esto es la segunda linea</p>","text/html",null);
+        web.setBackgroundColor(Color.TRANSPARENT);
+        web.setLayerType(WebView.LAYER_TYPE_SOFTWARE,null);
+        layout.addView(web);
 
     }
 
