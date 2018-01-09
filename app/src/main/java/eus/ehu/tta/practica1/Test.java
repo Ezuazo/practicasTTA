@@ -14,6 +14,8 @@ public class Test {
     private String pregunta = "Pregunta...";
     private String[] resp= {"A","B","C","D"};
     private boolean[] corr= {true,false,false,false};
+    private String[] mime= {"no advice","text/html","video","audio"};
+    private String[] res= {"no resource","http://www.athletic-club.eus/prehome.html","http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4","http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4"};
 
     public Test(){
         //Rellenar pregunta y respuestas para cada instancia
@@ -28,6 +30,8 @@ public class Test {
             Choice cho = new Choice();
             cho.setRespuesta(resp[i]);
             cho.setCorrecto(corr[i]);
+            cho.setRecurso(res[i]);
+            cho.setTipo(mime[i]);
             arraychoices.add(cho);
         }
         return arraychoices;
@@ -38,6 +42,11 @@ public class Test {
 
         private String respuesta;
         private boolean correcto;
+        private String tipo;
+        private String recurso;
+
+        public Choice() {
+        }
 
         public String getWording(){
             return respuesta;
@@ -54,6 +63,22 @@ public class Test {
 
         public void setCorrecto(boolean correcto) {
             this.correcto = correcto;
+        }
+
+        public String getRecurso() {
+            return recurso;
+        }
+
+        public void setRecurso(String recurso) {
+            this.recurso = recurso;
+        }
+
+        public String getTipo() {
+            return tipo;
+        }
+
+        public void setTipo(String tipo) {
+            this.tipo = tipo;
         }
     }
 }
