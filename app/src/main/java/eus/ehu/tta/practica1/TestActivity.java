@@ -96,6 +96,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         else if(tipo.equals("video")){
             showVideo(ayuda, layout);
         }
+        else if(tipo.equals("audio")){
+            showAudio(ayuda, layout);
+        }
         else
         {
             WebView web = new WebView(this);
@@ -111,6 +114,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+    private void showAudio(String ayuda, ViewGroup layout) {
+
+    }
+
 
     private void showVideo(String ayuda, ViewGroup layout) {
         VideoView video = new VideoView(this);
