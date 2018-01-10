@@ -59,10 +59,40 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
     public void sendAudio(View view){
-        Toast.makeText(getApplicationContext(),R.string.nofunction,Toast.LENGTH_SHORT).show();
+        if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
+        {
+            Toast.makeText(getApplicationContext(),"No tienes microfono, cafre",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+            if (intent.resolveActivity(getPackageManager()) != null){
+                    startActivityForResult(intent, AUDIO_REQUEST_CODE);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"No tienes app de micro, cafre",Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
     public void sendVideo(View view){
-        Toast.makeText(getApplicationContext(),R.string.nofunction,Toast.LENGTH_SHORT).show();
+        if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
+        {
+            Toast.makeText(getApplicationContext(),"No tienes camara, cafre",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null){
+                startActivityForResult(intent, VIDEO_REQUEST_CODE);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"No tienes app de camara, cafre",Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -81,6 +111,6 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
     public void sendArchivo(Uri uri){
-
+        //Codigo para subirlo al server
     }
 }
