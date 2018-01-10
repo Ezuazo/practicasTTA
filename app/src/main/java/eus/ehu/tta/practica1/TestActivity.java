@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
@@ -68,7 +69,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void viewAdvise(View view){
+    public void viewAdvise(View view) throws IOException {
 
         List<Test.Choice> todas = test.getChoices();
         Test.Choice elegida = todas.get(group.getCheckedRadioButtonId()-1);
@@ -97,7 +98,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             showVideo(ayuda, layout);
         }
         else if(tipo.equals("audio")){
-            showAudio(ayuda, layout);
+            showAudio(ayuda, view);
         }
         else
         {
@@ -115,8 +116,17 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void showAudio(String ayuda, ViewGroup layout) {
+    private void showAudio(String ayuda, View view) throws IOException {
 
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        };
+        AudioPlayer audio = new AudioPlayer(view,runnable);
+        audio.setAudioUri(Uri.parse(ayuda));
+        audio.start();
     }
 
 

@@ -3,6 +3,7 @@ package eus.ehu.tta.practica1;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.MediaController;
 
@@ -18,7 +19,23 @@ public class AudioPlayer implements MediaController.MediaPlayerControl, MediaPla
     private MediaPlayer player;
     private MediaController controller;
 
-    public AudioPlayer{}
+    public AudioPlayer (View view, final Runnable onExit){
+    this.view=view;
+        player = new MediaPlayer();
+        player.setOnPreparedListener(this);
+        controller = new MediaController(view.getContext()){
+            @Override
+            public boolean dispatchKeyEvent (KeyEvent event) {
+                if( event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    release();
+                    onExit.run();
+
+                }
+                return super.dispatchKeyEvent(event);
+            }
+
+        };
+    }
 
     public void setAudioUri(Uri uri) throws IOException{
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -34,6 +51,15 @@ public class AudioPlayer implements MediaController.MediaPlayerControl, MediaPla
         controller.show(0);
     }
 
+
+    public void release(){
+        if (player != null){
+            player.stop();
+            player.release();
+            player = null;
+        }
+    }
+
     @Override
     public void start(){
         player.start();
@@ -46,22 +72,22 @@ public class AudioPlayer implements MediaController.MediaPlayerControl, MediaPla
 
     @Override
     public int getDuration() {
-        return 0;
+        return player.getDuration();
     }
 
     @Override
     public int getCurrentPosition() {
-        return 0;
+        return player.getCurrentPosition();
     }
 
     @Override
     public void seekTo(int pos) {
-
+            player.seekTo(pos);
     }
 
     @Override
     public boolean isPlaying() {
-        return false;
+        return true;
     }
 
     @Override
@@ -71,21 +97,21 @@ public class AudioPlayer implements MediaController.MediaPlayerControl, MediaPla
 
     @Override
     public boolean canPause() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canSeekBackward() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canSeekForward() {
-        return false;
+        return true;
     }
 
     @Override
     public int getAudioSessionId() {
-        return 0;
+        return player.getAudioSessionId();
     }
 }
