@@ -3,9 +3,11 @@ package eus.ehu.tta.practica1;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 
 public class ExerciseActivity extends AppCompatActivity {
 
@@ -30,8 +33,10 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     public void sendFile(View view){
-
-        Toast.makeText(getApplicationContext(),R.string.nofunction,Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
 
     }
     public void sendPhoto(View view){
@@ -101,6 +106,9 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         switch (requestCode){
             case READ_REQUEST_CODE:
+                dumpImageMetaData(data.getData());
+                sendArchivo(data.getData());
+                break;
             case VIDEO_REQUEST_CODE:
             case AUDIO_REQUEST_CODE:
                 sendArchivo(data.getData());
@@ -110,7 +118,33 @@ public class ExerciseActivity extends AppCompatActivity {
                 break;
         }
     }
+
     public void sendArchivo(Uri uri){
         //Codigo para subirlo al server
     }
+
+    public void dumpImageMetaData(Uri uri){
+
+        Cursor cursor = this.getContentResolver().query(uri, null, null, null, null, null);
+
+        try{
+            if (cursor != null && cursor.moveToFirst()){
+                String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                String size = null;
+                if (!cursor.isNull(sizeIndex)){
+                    size = cursor.getString(sizeIndex);
+                }
+                else{
+                    size = "Unknown";
+                }
+                Toast.makeText(getApplicationContext(),"Nombre: "+displayName+" Tamaño: "+size,Toast.LENGTH_SHORT).show();
+
+            }
+        } finally {
+            cursor.close();
+        }
+    }
 }
+
