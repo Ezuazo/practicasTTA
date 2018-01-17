@@ -9,29 +9,47 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    ServerCx server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        server = new ServerCx();
     }
 
     public void login(View view){
-        Intent intent = new Intent(this,MenuActivity.class);
+
         String login = ((EditText)findViewById(R.id.login)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwd)).getText().toString();
 
-        if (authenticate(login,password))
-        {
-            intent.putExtra(MenuActivity.EXTRA_LOGIN, login);
-            startActivity(intent);
-        }else {
-            Toast.makeText(getApplicationContext(),R.string.errorlogin,Toast.LENGTH_SHORT).show();
-        }
+        getInfo(login,password);
+
     }
 
-    private boolean authenticate(String login, String password){
+    private void getInfo(final String id, final String pass){
 
-        //Aqui habria que checkear con el servidor
-        return true;
+        new ProgessTask<User>(this){
+            @Override
+            protected User work() throws Exception{
+
+                return server.getUser(id,pass,this.context.getResources().getString(R.string.baseUrl));
+            }
+
+            @Override
+            protected void onFinish(User user) {
+
+
+                if(user!= null) {
+                    Intent intent = new Intent(this.context, MenuActivity.class);
+                    intent.putExtra(MenuActivity.EXTRA_USER, user);
+                    startActivity(intent);
+                }
+                else{
+                    System.out.println("erorr user null");
+                }
+            }
+
+        }.execute();
+
     }
 }

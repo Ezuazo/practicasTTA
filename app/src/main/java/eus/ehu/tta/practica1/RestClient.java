@@ -1,14 +1,20 @@
 package eus.ehu.tta.practica1;
 
+import android.util.Base64;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Created by endika on 12/01/18.
@@ -23,7 +29,8 @@ public class RestClient {
     public RestClient(String baseUrl){ this.baseUrl = baseUrl;}
 
     public void setHttpBasicAuth (String user, String passwd){
-
+            String basicAuth = Base64.encodeToString(String.format("%s:%s",user,passwd).getBytes(),Base64.DEFAULT);
+            properties.put(AUTH, String.format("Basic %s", basicAuth));
     }
 
     public String getAuthorization(){
@@ -48,12 +55,25 @@ public class RestClient {
         return conn;
     }
 
-    public String getString(String path){
-        return null;
+    public String getString(String path) throws IOException {
+        HttpURLConnection conn = null;
+
+        conn = getConnection(path);
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+            return br.readLine();
+        }
+        finally {
+            if( conn != null )
+            {
+                conn.disconnect();
+            }
+        }
+
+
     }
 
-    public JSONObject getJson(String path){
-        return null;
+    public JSONObject getJson(String path) throws JSONException, IOException {
+        return new JSONObject(getString(path));
     }
 
     public int postFile (String path, InputStream is, String fileName){

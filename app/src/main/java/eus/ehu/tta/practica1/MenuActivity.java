@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class MenuActivity extends AppCompatActivity {
 
-    public static final String EXTRA_LOGIN = "login";
+    public static final String EXTRA_USER = "user";
 
 
     @Override
@@ -18,9 +18,9 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         Intent intent = getIntent();
-        String logintext = intent.getStringExtra(EXTRA_LOGIN);
+        User user = (User)intent.getSerializableExtra(EXTRA_USER);
         TextView bienvenido = (TextView)findViewById(R.id.menu_login);
-        bienvenido.setText(getString(R.string.Bienvenida)+" " +logintext);
+        bienvenido.setText(getString(R.string.Bienvenida)+" " +user.getName());
     }
 
     public void follow(View view){

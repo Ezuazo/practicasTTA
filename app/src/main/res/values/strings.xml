@@ -9,4 +9,5 @@
     <string name="button_send">Enviar</string>
     <string name="errorlogin">Usuario o contraseña incorrecto</string>
     <string name="nofunction">Funcion sin definir</string>
+    <string name="baseUrl">http://u017633.ehu.eus:28080/ServidorTta/rest/tta</string>
 </resources>
