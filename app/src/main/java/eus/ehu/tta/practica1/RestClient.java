@@ -10,8 +10,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,8 +111,25 @@ public class RestClient {
 
     }
 
-    public int postJson ( final JSONObject json, String path ){
-        return 0;
+    public int postJson ( final JSONObject json, String path ) throws IOException {
+
+
+        HttpURLConnection conn = null;
+
+        try {
+            conn = getConnection(path);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            PrintWriter pw = new PrintWriter(conn.getOutputStream());
+            pw.print(json.toString());
+            pw.close();
+            return conn.getResponseCode();
+
+        } finally {
+            if(conn != null){
+                conn.disconnect();
+            }
+        }
     }
 }
 

@@ -83,6 +83,22 @@ public class ServerCx implements ServerInterface {
 
     }
 
+    public void sendChoice (String id, String password, String baseUrl, User user, int selected) throws IOException {
+
+        client = new RestClient(baseUrl);
+        JSONObject choiceJson= new JSONObject();
+
+        client.setHttpBasicAuth(id,password);
+        try {
+            choiceJson.put("userId",user.getId());
+            choiceJson.put("choiceId",selected);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        int code = client.postJson(choiceJson,"postChoice");
+        System.out.println(code);
+    }
+
     @Override
     public User getUser(String id, String password, String baseUrl) throws JSONException {
         User user = null;
@@ -154,8 +170,6 @@ public class ServerCx implements ServerInterface {
         Test test = new Test();
         JSONArray choices = new JSONArray();
 
-        System.out.println("rellenar");
-
         try {
             choices = testJSON.getJSONArray("choices");
             test.setPregunta(testJSON.getString("wording"));
@@ -183,9 +197,6 @@ public class ServerCx implements ServerInterface {
             } catch (JSONException e) {
                 System.out.println("roto");
             }
-
-            System.out.println(choice.getCorrecto());
-            //System.out.println(choice.getTipo());
             test.getChoices().add(choice);
         }
 

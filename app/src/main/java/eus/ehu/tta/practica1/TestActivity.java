@@ -22,10 +22,13 @@ import java.util.List;
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String EXTRA_TEST = "test";
+    public static final String EXTRA_USER = "user";
     int correct = 0;
     private int selected;
     RadioGroup group;
     Test test;
+    ServerCx server;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_test);
         Intent intent = getIntent();
         test = (Test)intent.getSerializableExtra(EXTRA_TEST);
+        user = (User)intent.getSerializableExtra(EXTRA_USER);
         TextView pregunta = (TextView)findViewById(R.id.pregunta);
         pregunta.setText(test.getPregunta());
         group = (RadioGroup)findViewById(R.id.test_choices);
@@ -69,6 +73,27 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+        uploadJson();
+
+    }
+
+    public void uploadJson(){
+        new ProgessTask<Void>(this){
+            @Override
+            protected Void work() throws Exception{
+
+                server = new ServerCx();
+                server.sendChoice(user.getDni(),user.getPassword(),getResources().getString(R.string.baseUrl),user,selected);
+                return null;
+            }
+
+            @Override
+            protected void onFinish(Void user) {
+                Toast.makeText(getApplicationContext(),"JSON subido",Toast.LENGTH_SHORT).show();
+
+            }
+
+        }.execute();
     }
 
     public void viewAdvise(View view) throws IOException {
