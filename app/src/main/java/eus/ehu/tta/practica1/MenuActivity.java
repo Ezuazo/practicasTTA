@@ -56,8 +56,30 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void exercise(View view){
-        Intent intent = new Intent(this,ExerciseActivity.class);
-        startActivity(intent);
+
+
+        new ProgessTask<Exercise>(this){
+            @Override
+            protected Exercise work() throws Exception{
+
+                return server.getExercise(user.getDni(),user.getPassword(),getString(R.string.baseUrl),user);
+            }
+
+            @Override
+            protected void onFinish(Exercise exercise) {
+
+
+                if(exercise!= null) {
+                    Intent intent = new Intent(this.context,ExerciseActivity.class);
+                    intent.putExtra(ExerciseActivity.EXTRA_EXERCISE, exercise);
+                    startActivity(intent);
+                }
+                else{
+                    System.out.println("erorr exercise null");
+                }
+            }
+
+        }.execute();
 
     }
 }

@@ -3,7 +3,6 @@
     <string name="titulo">Alumno de TTA</string>
     <string name="Usuario">Usuario</string>
     <string name="Contraseña">Contraseña</string>
-    <string name="ejercicio">Explica como aplicarias MVC en el desarrollo de un APP</string>
     <string name="Bienvenida">Bienvenido </string>
     <string name="Pregunta">¿Cuál de las siguientes opciones NO se indica en el fichero de manifiesto de la app?</string>
     <string name="button_send">Enviar</string>

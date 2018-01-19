@@ -66,6 +66,22 @@ public class ServerCx implements ServerInterface {
         return user;
     }
 
+    @Override
+    public Exercise getExercise(String id, String password, String baseUrl, User user) throws JSONException {
+        Exercise exercise = null;
+        client = new RestClient(baseUrl);
+        client.setHttpBasicAuth(id,password);
+        JSONObject exerciseJSON = null;
+        try {
+            exerciseJSON = client.getJson(String.format("getExercise?id=%d", user.getNexttest()));
+        } catch ( IOException e){
+            return null;
+        }
+        exercise = rellenarExercise(exerciseJSON);
+
+        return exercise;
+    }
+
 
     public User rellenarUser ( JSONObject userJSON){
         User user = new User();
@@ -80,6 +96,24 @@ public class ServerCx implements ServerInterface {
             return null;
         }
         return user;
+    }
+
+    private Exercise rellenarExercise(JSONObject testJSON)  {
+
+        Exercise exercise = new Exercise();
+        try{
+            exercise.setId(testJSON.getInt("id"));
+            exercise.setWording(testJSON.getString("wording"));
+            JSONObject beanJSON = testJSON.getJSONObject("lessonBean");
+            Exercise.LessonBean bean = new Exercise.LessonBean();
+            bean.setId(beanJSON.getInt("id"));
+            bean.setNumber(beanJSON.getInt("number"));
+            bean.setTitle(beanJSON.getString("title"));
+            exercise.setBean(bean);
+        } catch (JSONException e){
+            return null;
+        }
+        return exercise;
     }
 
     private Test rellenarTest(JSONObject testJSON)  {

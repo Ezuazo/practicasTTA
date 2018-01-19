@@ -11,6 +11,7 @@ import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -23,6 +24,9 @@ public class ExerciseActivity extends AppCompatActivity {
     public final static int VIDEO_REQUEST_CODE = 2;
     public final static int AUDIO_REQUEST_CODE = 3;
     public final static int READ_REQUEST_CODE = 4;
+    public static final String EXTRA_EXERCISE = "exercise";
+
+    Exercise exercise;
 
     Uri pictureUri;
 
@@ -30,6 +34,13 @@ public class ExerciseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
+
+        Intent intent = getIntent();
+        exercise = (Exercise)intent.getSerializableExtra(EXTRA_EXERCISE);
+
+        TextView pregunta = (TextView)findViewById(R.id.textejercicio);
+        pregunta.setText(exercise.getWording());
+
     }
 
     public void sendFile(View view){
