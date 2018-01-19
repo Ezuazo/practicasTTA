@@ -21,7 +21,9 @@ import java.util.List;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String EXTRA_TEST = "test";
     int correct = 0;
+    private int selected;
     RadioGroup group;
     Test test;
 
@@ -29,14 +31,15 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        test = new Test();
+        Intent intent = getIntent();
+        test = (Test)intent.getSerializableExtra(EXTRA_TEST);
         TextView pregunta = (TextView)findViewById(R.id.pregunta);
         pregunta.setText(test.getPregunta());
         group = (RadioGroup)findViewById(R.id.test_choices);
         int i = 0;
         for (Test.Choice choice : test.getChoices()){
             RadioButton radio = new RadioButton(this);
-            radio.setText(choice.getWording());
+            radio.setText(choice.getRespuesta());
             radio.setOnClickListener(this);
             group.addView(radio);
             if( choice.isCorrect() ){
@@ -49,7 +52,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void send(View view){
 
         ViewGroup layout = (ViewGroup)view.getParent();
-        int selected = group.getCheckedRadioButtonId()-1;
         int choices = group.getChildCount();
         for (int i = 0; i < choices; i++){
             group.getChildAt(i).setEnabled(false);
@@ -72,7 +74,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void viewAdvise(View view) throws IOException {
 
         List<Test.Choice> todas = test.getChoices();
-        Test.Choice elegida = todas.get(group.getCheckedRadioButtonId()-1);
+        Test.Choice elegida = todas.get(selected);
 
         String tipo= elegida.getTipo();
         String ayuda= elegida.getRecurso();
@@ -94,10 +96,10 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 layout.addView(web);
             }
         }
-        else if(tipo.equals("video")){
+        else if(tipo.equals("video/mp4")){
             showVideo(ayuda, layout);
         }
-        else if(tipo.equals("audio")){
+        else if(tipo.equals("audio/mpeg")){
             showAudio(ayuda, view);
         }
         else
@@ -162,6 +164,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view){
         findViewById(R.id.button_send_test).setVisibility(View.VISIBLE);
+        selected = group.indexOfChild(view);
     }
 
 }

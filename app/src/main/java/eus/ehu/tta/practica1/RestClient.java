@@ -65,6 +65,7 @@ public class RestClient {
         finally {
             if( conn != null )
             {
+                System.out.println(conn.getResponseCode());
                 conn.disconnect();
             }
         }

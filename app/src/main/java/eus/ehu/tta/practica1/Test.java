@@ -2,6 +2,7 @@ package eus.ehu.tta.practica1;
 
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +10,10 @@ import java.util.List;
  * Created by endika on 26/12/17.
  */
 
-public class Test {
+public class Test implements Serializable {
 
     private String pregunta = "Pregunta...";
-    private String[] resp= {"A","B","C","D"};
-    private boolean[] corr= {true,false,false,false};
-    private String[] mime= {"no advice","text/html","video","audio"};
-    private String[] res= {"no resource","http://www.athletic-club.eus/prehome.html","http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4","http://u017633.ehu.eus:28080/static/ServidorTta/AndroidManifest.mp4"};
+    private List<Choice> choices = new ArrayList<Choice>();
 
     public Test(){
         //Rellenar pregunta y respuestas para cada instancia
@@ -24,22 +22,23 @@ public class Test {
     public String getPregunta(){
         return pregunta;
     }
-    public List<Choice> getChoices(){
-        List<Choice> arraychoices = new ArrayList<Choice>();
-        for(int i = 0 ; i< resp.length ; i++) {
-            Choice cho = new Choice();
-            cho.setRespuesta(resp[i]);
-            cho.setCorrecto(corr[i]);
-            cho.setRecurso(res[i]);
-            cho.setTipo(mime[i]);
-            arraychoices.add(cho);
-        }
-        return arraychoices;
+    public void setPregunta(String pregunta) { this.pregunta=pregunta; }
+
+    public void addChoice (Choice choice){
+        choices.add(choice);
     }
 
-    public class Choice{
+    public List<Choice> getChoices(){
+
+        return choices;
+    }
 
 
+    public void setChoices (List<Choice> choices) { this.choices = choices; }
+
+    public static class Choice implements Serializable{
+
+        private int id;
         private String respuesta;
         private boolean correcto;
         private String tipo;
@@ -48,9 +47,7 @@ public class Test {
         public Choice() {
         }
 
-        public String getWording(){
-            return respuesta;
-        }
+
 
         public boolean isCorrect() {
             return correcto;
@@ -60,6 +57,7 @@ public class Test {
             this.respuesta = respuesta;
         }
 
+        public boolean getCorrecto () {return correcto;}
 
         public void setCorrecto(boolean correcto) {
             this.correcto = correcto;
@@ -79,6 +77,18 @@ public class Test {
 
         public void setTipo(String tipo) {
             this.tipo = tipo;
+        }
+
+        public String getRespuesta() {
+            return respuesta;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
     }
 }

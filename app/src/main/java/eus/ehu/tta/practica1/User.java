@@ -9,11 +9,14 @@ import java.io.Serializable;
 public class User implements Serializable{
 
     int id;
+    String dni;
     String name;
     String lessonnum;
     String lessontitle;
     int nexttest;
     int nextexercise;
+    String password;
+
 
     public int getId() {
         return id;
@@ -61,5 +64,21 @@ public class User implements Serializable{
 
     public void setNextexercise(int nextexercise) {
         this.nextexercise = nextexercise;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 }

@@ -11,16 +11,18 @@ import android.widget.Toast;
 public class MenuActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER = "user";
-
+    private ServerCx server;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         Intent intent = getIntent();
-        User user = (User)intent.getSerializableExtra(EXTRA_USER);
+        user = (User)intent.getSerializableExtra(EXTRA_USER);
         TextView bienvenido = (TextView)findViewById(R.id.menu_login);
         bienvenido.setText(getString(R.string.Bienvenida)+" " +user.getName());
+        server = new ServerCx();
     }
 
     public void follow(View view){
@@ -28,8 +30,28 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void test(View view){
-        Intent intent = new Intent(this,TestActivity.class);
-        startActivity(intent);
+        new ProgessTask<Test>(this){
+            @Override
+            protected Test work() throws Exception{
+
+                return server.getTest(user.getDni(),user.getPassword(),getString(R.string.baseUrl),user);
+            }
+
+            @Override
+            protected void onFinish(Test test) {
+
+
+                if(test!= null) {
+                    Intent intent = new Intent(this.context, TestActivity.class);
+                    intent.putExtra(TestActivity.EXTRA_TEST, test);
+                    startActivity(intent);
+                }
+                else{
+                    System.out.println("erorr test null");
+                }
+            }
+
+        }.execute();
 
     }
 

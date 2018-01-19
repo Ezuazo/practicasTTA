@@ -18,7 +18,8 @@ public interface ServerInterface {
 
     //Exercise getExercise();
 
-    Test getTest();
+    
+    Test getTest(String id, String password, String baseUrl, User user) throws JSONException;
 
     void sendFile(Uri uri);
 
