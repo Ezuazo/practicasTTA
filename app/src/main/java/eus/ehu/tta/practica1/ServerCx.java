@@ -1,6 +1,10 @@
 package eus.ehu.tta.practica1;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.widget.Toast;
 
@@ -8,7 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -45,7 +52,34 @@ public class ServerCx implements ServerInterface {
 
 
     @Override
-    public void sendFile(Uri uri) {
+    public void sendFile(String id, String password, String baseUrl, User user, Uri uri, Context context) throws IOException {
+
+        client = new RestClient(baseUrl);
+        InputStream is=null;
+        String fileName = null;
+        if(uri.toString().startsWith("file")){
+            try {
+            is = new FileInputStream(uri.toString().substring(7));
+            String[] pathSections = uri.toString().split("/");
+            fileName = pathSections[pathSections.length-1];
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            try {
+                is = context.getContentResolver().openInputStream(uri);
+                fileName= dumpImageMetaData(uri,context);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(is != null && !fileName.isEmpty() && fileName!=null){
+            client.setHttpBasicAuth(id, password);
+            int code = client.postFile(String.format("postExercise?user%d&id=%d",user.getId(),user.getNextexercise()),is,fileName);
+            System.out.println(code);
+        }
 
     }
 
@@ -156,6 +190,30 @@ public class ServerCx implements ServerInterface {
         }
 
         return test;
+    }
+
+    public String dumpImageMetaData(Uri uri, Context context){
+
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null, null);
+
+        String displayName = null;
+        try{
+            if (cursor != null && cursor.moveToFirst()){
+                displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                String size = null;
+                if (!cursor.isNull(sizeIndex)){
+                    size = cursor.getString(sizeIndex);
+                }
+                else{
+                    size = "Unknown";
+                }
+            }
+        } finally {
+            cursor.close();
+            return displayName;
+        }
     }
 }
 

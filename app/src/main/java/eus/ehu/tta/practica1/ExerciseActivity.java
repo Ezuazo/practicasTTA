@@ -25,8 +25,13 @@ public class ExerciseActivity extends AppCompatActivity {
     public final static int AUDIO_REQUEST_CODE = 3;
     public final static int READ_REQUEST_CODE = 4;
     public static final String EXTRA_EXERCISE = "exercise";
+    public static final String EXTRA_USER = "user";
+
 
     Exercise exercise;
+    User user;
+    private ServerCx server;
+
 
     Uri pictureUri;
 
@@ -37,6 +42,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         exercise = (Exercise)intent.getSerializableExtra(EXTRA_EXERCISE);
+        user = (User)intent.getSerializableExtra(EXTRA_USER);
 
         TextView pregunta = (TextView)findViewById(R.id.textejercicio);
         pregunta.setText(exercise.getWording());
@@ -117,9 +123,6 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         switch (requestCode){
             case READ_REQUEST_CODE:
-                dumpImageMetaData(data.getData());
-                sendArchivo(data.getData());
-                break;
             case VIDEO_REQUEST_CODE:
             case AUDIO_REQUEST_CODE:
                 sendArchivo(data.getData());
@@ -130,32 +133,27 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
 
-    public void sendArchivo(Uri uri){
-        //Codigo para subirlo al server
-    }
+    public void sendArchivo(final Uri uri){
 
-    public void dumpImageMetaData(Uri uri){
+        new ProgessTask<Void>(this){
+            @Override
+            protected Void work() throws Exception{
 
-        Cursor cursor = this.getContentResolver().query(uri, null, null, null, null, null);
+                server = new ServerCx();
+                server.sendFile(user.getDni(),user.getPassword(),getResources().getString(R.string.baseUrl),user,uri,this.context);
+                return null;
+            }
 
-        try{
-            if (cursor != null && cursor.moveToFirst()){
-                String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-
-                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                String size = null;
-                if (!cursor.isNull(sizeIndex)){
-                    size = cursor.getString(sizeIndex);
-                }
-                else{
-                    size = "Unknown";
-                }
-                Toast.makeText(getApplicationContext(),"Nombre: "+displayName+" Tamaño: "+size,Toast.LENGTH_SHORT).show();
+            @Override
+            protected void onFinish(Void user) {
+                Toast.makeText(getApplicationContext(),"Fichero subido",Toast.LENGTH_SHORT).show();
 
             }
-        } finally {
-            cursor.close();
-        }
+
+        }.execute();
+
     }
+
+
 }
 

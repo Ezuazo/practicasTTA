@@ -72,6 +72,7 @@ public class MenuActivity extends AppCompatActivity {
                 if(exercise!= null) {
                     Intent intent = new Intent(this.context,ExerciseActivity.class);
                     intent.putExtra(ExerciseActivity.EXTRA_EXERCISE, exercise);
+                    intent.putExtra(ExerciseActivity.EXTRA_USER, user);
                     startActivity(intent);
                 }
                 else{

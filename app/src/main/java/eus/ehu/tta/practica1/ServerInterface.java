@@ -1,5 +1,6 @@
 package eus.ehu.tta.practica1;
 
+import android.content.Context;
 import android.net.Uri;
 
 import org.json.JSONException;
@@ -21,7 +22,7 @@ public interface ServerInterface {
     
     Test getTest(String id, String password, String baseUrl, User user) throws JSONException;
 
-    void sendFile(Uri uri);
+    void sendFile(String id, String password, String baseUrl, User user, Uri uri, Context context) throws IOException;
 
 
     User getUser(String id, String password, String baseUrl) throws JSONException, IOException;

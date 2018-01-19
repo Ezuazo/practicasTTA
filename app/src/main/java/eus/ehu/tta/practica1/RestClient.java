@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,8 +78,35 @@ public class RestClient {
         return new JSONObject(getString(path));
     }
 
-    public int postFile (String path, InputStream is, String fileName){
-        return 0;
+    public int postFile (String path, InputStream is, String fileName) throws IOException {
+
+        System.out.println("Estoy en postFile ya");
+        String boundary = Long.toString(System.currentTimeMillis());
+        String newLine = "\r\n";
+        String prefix = "--";
+        HttpURLConnection conn = null;
+        try {
+            conn = getConnection(path);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+            conn.setDoOutput(true);
+            DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+            out.writeBytes(prefix+boundary+newLine);
+            out.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\""+fileName+"\""+newLine);
+            out.writeBytes(newLine);
+            byte[] data = new byte[1024*1024];
+            int len;
+            while ((len=is.read(data))>0)
+                out.write(data,0,len);
+            out.writeBytes(newLine);
+            out.writeBytes(prefix+boundary+prefix+newLine);
+            out.close();
+            return conn.getResponseCode();
+        }finally {
+            if (conn!=null)
+                conn.disconnect();
+        }
+
     }
 
     public int postJson ( final JSONObject json, String path ){
